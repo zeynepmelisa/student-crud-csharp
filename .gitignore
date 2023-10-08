@@ -1,0 +1,6 @@
+hello/obj/*
+hello/bin/*
+**/obj/*
+**/bin/*
+**/obj/**
+**/bin/**

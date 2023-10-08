@@ -1,3 +1,5 @@
 {
-    "dotnet.defaultSolution": "hello.sln"
+    "dotnet.defaultSolution": "hello.sln",
+    "appService.preDeployTask": "publish-release",
+    "appService.deploySubpath": "hello/bin/Release/net7.0/publish"
 }
