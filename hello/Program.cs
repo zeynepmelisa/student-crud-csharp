@@ -3,15 +3,15 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
 var connection = String.Empty;
-// if (builder.Environment.IsDevelopment())
-// {
-//     builder.Configuration.AddEnvironmentVariables().AddJsonFile("appsettings.Development.json");
-//     connection = builder.Configuration.GetConnectionString("AZURE_SQL_CONNECTIONSTRING");
-// }
-// else
-// {
-//     connection = Environment.GetEnvironmentVariable("AZURE_SQL_CONNECTIONSTRING");
-// }
+if (builder.Environment.IsDevelopment())
+{
+    builder.Configuration.AddEnvironmentVariables().AddJsonFile("appsettings.Development.json");
+    connection = builder.Configuration.GetConnectionString("AZURE_SQL_CONNECTIONSTRING");
+}
+else
+{
+    connection = Environment.GetEnvironmentVariable("AZURE_SQL_CONNECTIONSTRING");
+}
 
 builder.Configuration.AddEnvironmentVariables().AddJsonFile("appsettings.Development.json");
     connection = builder.Configuration.GetConnectionString("AZURE_SQL_CONNECTIONSTRING");
