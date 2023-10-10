@@ -1,5 +1,7 @@
+using System.Net;
 using Microsoft.EntityFrameworkCore;
 
+// Set up the web application and configure the database connection string based on the application's environment
 var builder = WebApplication.CreateBuilder(args);
 
 var connection = String.Empty;
@@ -15,9 +17,9 @@ else
 
 
 builder.Configuration.AddEnvironmentVariables().AddJsonFile("appsettings.Development.json");
-    connection = builder.Configuration.GetConnectionString("AZURE_SQL_CONNECTIONSTRING");
+connection = builder.Configuration.GetConnectionString("AZURE_SQL_CONNECTIONSTRING");
 
-// Add services to the container.
+// Add services to the container
 builder.Services.AddDbContext<StudentDbContext>(options =>
     options.UseSqlServer(connection));
 
@@ -32,8 +34,8 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 // if (app.Environment.IsDevelopment())
 // {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+app.UseSwagger();
+app.UseSwaggerUI();
 // }
 
 app.UseHttpsRedirection();
@@ -56,5 +58,30 @@ app.MapPost("/Student", (Student student, StudentDbContext context) =>
 })
 .WithName("CreateStudent")
 .WithOpenApi();
+
+app.MapPut("/Student", (Student student, StudentDbContext context) =>
+{
+    context.Update(student);
+    context.SaveChanges();
+})
+.WithName("UpdateStudent");
+
+app.MapDelete("/Student/{id}", async (HttpContext context, StudentDbContext dbContext, int id) =>
+{
+    Student student = dbContext.Students.Find(id) ?? null;
+
+    if (student is null)
+    {
+        context.Response.StatusCode = (int)HttpStatusCode.NotFound;
+        await context.Response.WriteAsync("Student was not found.");
+        return;
+    }
+
+    dbContext.Remove(student);
+    dbContext.SaveChanges();
+    
+    context.Response.StatusCode = (int)HttpStatusCode.OK;
+    await context.Response.WriteAsync("Successfully deleted student.");
+}).WithName("DeleteStudent");
 
 app.Run();
