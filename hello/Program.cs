@@ -29,6 +29,19 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+
+//specify CORS policy
+builder.Services.AddCors(opt =>
+{
+    opt.AddDefaultPolicy(
+        policy =>
+        {
+            policy.AllowAnyHeader();
+            policy.AllowAnyMethod();
+            policy.AllowAnyOrigin();
+        });
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -79,7 +92,7 @@ app.MapDelete("/Student/{id}", async (HttpContext context, StudentDbContext dbCo
 
     dbContext.Remove(student);
     dbContext.SaveChanges();
-    
+
     context.Response.StatusCode = (int)HttpStatusCode.OK;
     await context.Response.WriteAsync("Successfully deleted student.");
 }).WithName("DeleteStudent");
